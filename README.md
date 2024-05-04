@@ -14,6 +14,7 @@ This is a web application for a fashion store, featuring a backend built with No
 ## Technologies Used
 
 - Backend:
+
   - Node.js
   - Express.js
   - MongoDB
@@ -28,5 +29,35 @@ This is a web application for a fashion store, featuring a backend built with No
 To get started with the project, follow these steps:
 
 1. Clone the repository:
-   ```bash
-   git clone 
+
+```bash
+   git clone https://github.com/keshavagrawal04/Fashion-Store.git
+```
+
+2. Install dependencies for both frontend and backend:
+
+```bash
+cd frontend
+npm install
+cd ../backend
+npm install
+```
+
+3. Set up the environment variables:
+
+   - Create a .env file in the backend directory and configure MongoDB connection URI and any other necessary variables.
+
+4. Run the development server:
+   - For the backend:
+
+```bash
+   cd backend
+   npm start
+```
+
+    - For the frontend:
+
+```bash
+   cd backend
+   npm start
+```
