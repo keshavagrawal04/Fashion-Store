@@ -36,6 +36,6 @@ app.get("/", (req, res) => {
 app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 const { userRoutes } = require("./routes");
-app.use("/api/v1", userRoutes);
+app.use("/api/v1/user", userRoutes);
 
 module.exports = app;
