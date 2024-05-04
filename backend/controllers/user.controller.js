@@ -1,5 +1,9 @@
 const { userService } = require("../services");
 const { crypto, jwt } = require("../utils");
+const otpGenerator = require("otp-generator");
+const nodemailer = require("nodemailer");
+
+const otpStore = {};
 
 const registerUser = async (req, res) => {
   try {
@@ -63,6 +67,33 @@ const loginUser = async (req, res) => {
         tokens,
       },
     });
+  } catch (error) {
+    console.log(`❌ Internal Server Error : ${error.message}`);
+    res.status(400).json({
+      status: 400,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { body } = req;
+    const user = await userService.findUserByEmail(body.email);
+    const otp = otpGenerator.generate(6, {
+      digits: true,
+      alphabets: false,
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+    });
+    otpStore[email] = otp;
+    if (!user) {
+      return res.status(400).json({
+        status: 400,
+        message: "User With This Email Is Not Registered",
+      });
+    }
   } catch (error) {
     console.log(`❌ Internal Server Error : ${error.message}`);
     res.status(400).json({

@@ -34,5 +34,5 @@ const userSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-// 9926491887
+
 module.exports = mongoose.model("User", userSchema);
