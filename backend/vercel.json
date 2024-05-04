@@ -11,9 +11,10 @@
       "src": "/(.*)",
       "dest": "/"
     },
+    { "handle": "filesystem" },
     {
       "src": "./swagger.yaml",
-      "dest": "swagger.yaml"
+      "dest": "./swagger.yaml"
     }
   ]
 }
