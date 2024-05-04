@@ -12,4 +12,8 @@ app.get("/", (req, res) => {
   res.status(200).json({ status: 200, documentation: "api/docs/" });
 });
 
+const { userRoutes } = require("./routes");
+
+app.use("/api/v1/user/", userRoutes);
+
 module.exports = app;

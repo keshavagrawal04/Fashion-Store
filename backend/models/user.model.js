@@ -26,6 +26,11 @@ const userSchema = mongoose.Schema(
     profileImage: {
       type: String,
     },
+    role: {
+      type: String,
+      enum: ["User", "Admin"],
+      default: "User",
+    },
   },
   { timeStamps: true }
 );
