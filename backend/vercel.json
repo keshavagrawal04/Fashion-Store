@@ -8,13 +8,15 @@
   ],
   "routes": [
     {
+      "src": "/swagger.yaml",
+      "dest": "./swagger.yaml"
+    },
+    {
       "src": "/(.*)",
       "dest": "/"
     },
-    { "handle": "filesystem" },
     {
-      "src": "./swagger.yaml",
-      "dest": "./swagger.yaml"
+      "handle": "filesystem"
     }
   ]
 }
