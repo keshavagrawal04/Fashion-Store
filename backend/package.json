@@ -1,0 +1,22 @@
+{
+  "name": "fashion-store-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Keshav Agrawal",
+  "license": "ISC",
+  "description": "",
+  "scripts": {
+    "start": "nodemon ."
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
