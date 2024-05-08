@@ -1,6 +1,7 @@
 const { User } = require("../models");
 const { userService, otpService } = require("../services");
 const { crypto, jwt, email } = require("../utils");
+const { responseMessages } = require("../configs");
 
 const registerUser = async (req, res) => {
   try {
@@ -9,21 +10,23 @@ const registerUser = async (req, res) => {
     if (user) {
       return res.status(400).json({
         status: 400,
-        message: "User With This Email Is Already Registered",
+        message: responseMessages.USER_EXISTS,
       });
     }
     body.password = await crypto.generateHash(body.password);
     user = await userService.saveUser(body);
     return res.status(201).json({
       status: 200,
-      message: "User Registered Successfully",
+      message: responseMessages.USER_REGISTRATION_SUCCESS,
       data: user,
     });
   } catch (error) {
-    console.log(`❌ Internal Server Error : ${error.message}`);
+    console.log(
+      `❌ ${responseMessages.USER_REGISTRATION_SUCCESS} : ${error.message}`
+    );
     res.status(400).json({
       status: 400,
-      message: "Internal server error",
+      message: responseMessages.USER_REGISTRATION_SUCCESS,
       error: error.message,
     });
   }
@@ -36,7 +39,7 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         status: 400,
-        message: "User With This Email Is Not Registered",
+        message: responseMessages.USER_NOT_FOUND,
       });
     }
     const isPasswordValid = await crypto.isHashValid(
@@ -47,7 +50,7 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({
         status: 400,
-        message: "Invalid Password Try Again",
+        message: responseMessages.INVALID_PASSWORD,
       });
     }
     const tokens = await jwt.generateTokens({
@@ -56,7 +59,7 @@ const loginUser = async (req, res) => {
     });
     return res.status(201).json({
       status: 200,
-      message: "User Logged In Successfully",
+      message: responseMessages.USER_LOGIN_SUCCESS,
       data: {
         userId: user._id,
         role: user.role,
@@ -64,10 +67,12 @@ const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(`❌ Internal Server Error : ${error.message}`);
+    console.log(
+      `❌ ${responseMessages.INTERNAL_SERVER_ERROR} : ${error.message}`
+    );
     res.status(400).json({
       status: 400,
-      message: "Internal server error",
+      message: responseMessages.INTERNAL_SERVER_ERROR,
       error: error.message,
     });
   }
@@ -80,7 +85,7 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         status: 400,
-        message: "User With This Email Is Not Registered",
+        message: responseMessages.USER_NOT_FOUND,
       });
     }
     const expiryTime = Date.now() + 2 * 60 * 1000;
@@ -88,13 +93,15 @@ const forgotPassword = async (req, res) => {
     await email.sendPasswordResetOtp(body.email, otp);
     return res.status(200).json({
       status: 200,
-      message: "Password Reset Otp Sended To Users Email",
+      message: responseMessages.OTP_SENT_SUCCESS,
     });
   } catch (error) {
-    console.log(`❌ Internal Server Error : ${error.message}`);
+    console.log(
+      `❌ ${responseMessages.INTERNAL_SERVER_ERROR} : ${error.message}`
+    );
     res.status(400).json({
       status: 400,
-      message: "Internal server error",
+      message: responseMessages.INTERNAL_SERVER_ERROR,
       error: error.message,
     });
   }
@@ -107,7 +114,7 @@ const verifyOtp = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         status: 400,
-        message: "User With This Email Is Not Registered",
+        message: responseMessages.USER_NOT_FOUND,
       });
     }
     const currentTime = Date.now();
@@ -120,13 +127,15 @@ const verifyOtp = async (req, res) => {
     }
     return res.status(200).json({
       status: 200,
-      message: "Otp Is Verified",
+      message: responseMessages.OTP_VERIFIED,
     });
   } catch (error) {
-    console.log(`❌ Internal Server Error : ${error.message}`);
+    console.log(
+      `❌ ${responseMessages.INTERNAL_SERVER_ERROR}: ${error.message}`
+    );
     res.status(400).json({
       status: 400,
-      message: "Internal server error",
+      message: responseMessages.INTERNAL_SERVER_ERROR,
       error: error.message,
     });
   }
@@ -139,7 +148,7 @@ const createPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         status: 400,
-        message: "User With This Email Is Not Registered",
+        message: responseMessages.USER_NOT_FOUND,
       });
     }
     password = await crypto.generateHash(password);
@@ -150,13 +159,15 @@ const createPassword = async (req, res) => {
     );
     return res.status(200).json({
       status: 200,
-      message: "Password Successfully Updated",
+      message: responseMessages.PASSWORD_UPDATE_SUCCESS,
     });
   } catch (error) {
-    console.log(`❌ Internal Server Error : ${error.message}`);
+    console.log(
+      `❌ ${responseMessages.INTERNAL_SERVER_ERROR} : ${error.message}`
+    );
     res.status(400).json({
       status: 400,
-      message: "Internal server error",
+      message: responseMessages.INTERNAL_SERVER_ERROR,
       error: error.message,
     });
   }
