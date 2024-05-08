@@ -1,4 +1,6 @@
 const nodemailer = require("nodemailer");
+const fs = require("fs");
+const path = require("path");
 
 const { ADMIN_USER_GMAIL, ADMIN_USER_PASS } = process.env;
 
@@ -12,12 +14,23 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const readHtmlTemplate = () => {
+  const filePath = path.join(
+    __dirname,
+    "../templates/forgotPasswordOtpTemplate.html"
+  );
+  console.log(filePath);
+  return fs.readFileSync(filePath, "utf8");
+};
+
 const sendPasswordResetOtp = async (to, otp) => {
+  const htmlTemplate = readHtmlTemplate();
+
   const mailOptions = {
     from: ADMIN_USER_GMAIL,
     to: to,
     subject: "Password Reset OTP (One Time Password)",
-    html: `<p>OTP (One Time Password) : ${otp}</p>`,
+    html: htmlTemplate.replace("{{otp}}", otp),
   };
 
   await transporter.sendMail(mailOptions, (error, info) => {

@@ -1,9 +1,6 @@
 const { User } = require("../models");
-const { userService } = require("../services");
+const { userService, otpService } = require("../services");
 const { crypto, jwt, email } = require("../utils");
-const otpGenerator = require("otp-generator");
-
-const otpStore = {};
 
 const registerUser = async (req, res) => {
   try {
@@ -80,23 +77,14 @@ const forgotPassword = async (req, res) => {
   try {
     const { body } = req;
     const user = await userService.findUserByEmail(body.email);
-    const otp = otpGenerator.generate(6, {
-      digits: true,
-      alphabets: false,
-      upperCaseAlphabets: false,
-      lowerCaseAlphabets: false,
-      specialChars: false,
-    });
-    otpStore[body.email] = {
-      otp: otp,
-      expiryTimestamp: Date.now() + 2 * 60 * 1000,
-    };
     if (!user) {
       return res.status(400).json({
         status: 400,
         message: "User With This Email Is Not Registered",
       });
     }
+    const expiryTime = Date.now() + 2 * 60 * 1000;
+    const otp = await otpService.generateOtp(body.email, expiryTime);
     await email.sendPasswordResetOtp(body.email, otp);
     return res.status(200).json({
       status: 200,
@@ -123,11 +111,11 @@ const verifyOtp = async (req, res) => {
       });
     }
     const currentTime = Date.now();
-    const isOtpValid = otp === otpStore[email].otp;
-    if (!isOtpValid || currentTime < otpStore[email].otp.expiryTimestamp) {
+    const isOtpValid = await otpService.verifyOtp(email, otp, currentTime);
+    if (!isOtpValid.status) {
       return res.status(400).json({
         status: 400,
-        message: "Invalid / Expired Otp Try Again",
+        message: isOtpValid.message,
       });
     }
     return res.status(200).json({
