@@ -2,34 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const { database } = require("./utils");
 const swaggerUI = require("swagger-ui-express");
-const fs = require("fs");
 const yaml = require("js-yaml");
+const { swaggerYaml } = require("./configs");
 
-const swaggerFile = fs.readFileSync("./swagger.yaml", "utf8");
-const swaggerDocument = yaml.load(swaggerFile);
+const swaggerDocument = yaml.load(swaggerYaml);
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-
-// const options = {
-//   definition: {
-//     openapi: "3.0.0",
-//     info: {
-//       title: "Fashion Store E-Commerce",
-//       version: "1.0.0",
-//       description: "A simple Express Library API",
-//     },
-//     servers: [
-//       {
-//         url: "http://localhost:8000/api/v1/",
-//       },
-//     ],
-//   },
-//   apis: ["./routes/*.js"],
-// };
-
-// const specs = swaggerJsDoc(options);
 
 database.connect();
 

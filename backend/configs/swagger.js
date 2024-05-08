@@ -1,0 +1,328 @@
+const swaggerYaml = `#yml
+openapi: "3.0.0"
+info:
+  title: "Fashion Store E-Commerce"
+  version: "1.0.0"
+  description: "A simple Express Library API"
+servers:
+  - url: "http://localhost:8000/api/v1/"
+paths:
+  /user/register:
+    post:
+      summary: "Register a new user"
+      tags:
+        - "User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistration"
+      responses:
+        "200":
+          description: "User successfully registered"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: "Invalid request body or missing required fields"
+        "500":
+          description: "Internal server error"
+  /user/login:
+    post:
+      summary: "Login a user"
+      tags:
+        - "User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: "User successfully logged in"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLoginResponse"
+        "401":
+          description: "Unauthorized. Invalid email or password."
+        "500":
+          description: "Internal server error"
+  /user/forgot-password:
+    post:
+      summary: Send password reset OTP to user's email
+      description: |
+        This endpoint allows users to request a password reset by providing their email address. 
+        If the email address is associated with a registered user, an OTP (one-time password) is generated 
+        and sent to the user's email address for verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the user requesting password reset.
+                  example: user@example.com
+              required:
+                - email
+      responses:
+        "200":
+          description: Password reset OTP sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Password reset OTP sent to user's email.
+        "400":
+          description: Bad request or internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Internal server error.
+                  error:
+                    type: string
+                    example: Error message detailing the issue.
+      tags:
+        - User
+  /user/verify-otp:
+    post:
+      summary: Verify OTP for password reset
+      description: |
+        This endpoint allows users to verify the OTP (one-time password) sent to their email address for password reset.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the user.
+                  example: user@example.com
+                otp:
+                  type: string
+                  description: The OTP sent to the user's email for verification.
+                  example: 123456
+              required:
+                - email
+                - otp
+      responses:
+        "200":
+          description: OTP verified successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Otp Is Verified
+        "400":
+          description: Bad request or OTP validation failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid Otp Try Again
+                  error:
+                    type: string
+                    example: Error message detailing the issue.
+      tags:
+        - User
+  /user/create-password:
+    post:
+      summary: Create or update user password
+      description: |
+        This endpoint allows users to create or update their password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the user.
+                  example: user@example.com
+                password:
+                  type: string
+                  description: The new password for the user.
+                  example: newPassword123
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: Password successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Password Successfully Updated
+        "400":
+          description: Bad request or internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Internal server error.
+                  error:
+                    type: string
+                    example: Error message detailing the issue.
+      tags:
+        - User
+components:
+  schemas:
+    User:
+      type: "object"
+      required:
+        - "name"
+        - "email"
+        - "number"
+        - "password"
+      properties:
+        _id:
+          type: "string"
+          description: "The unique identifier for the user."
+        name:
+          type: "string"
+          description: "The name of the user."
+        email:
+          type: "string"
+          format: "email"
+          description: "The email address of the user."
+        number:
+          type: "integer"
+          description: "The phone number of the user."
+        password:
+          type: "object"
+          properties:
+            hash:
+              type: "string"
+              description: "The hashed password of the user."
+            salt:
+              type: "string"
+              description: "The salt used for password hashing."
+        profileImage:
+          type: "string"
+          description: "The URL of the user's profile image."
+        role:
+          type: "string"
+          enum:
+            - "User"
+            - "Admin"
+          default: "User"
+          description: "The role of the user (either 'User' or 'Admin')."
+        createdAt:
+          type: "string"
+          format: "date-time"
+          description: "The date and time when the user was created."
+        updatedAt:
+          type: "string"
+          format: "date-time"
+          description: "The date and time when the user was last updated."
+    UserRegistration:
+      type: "object"
+      required:
+        - "name"
+        - "email"
+        - "password"
+        - "number"
+      properties:
+        name:
+          type: "string"
+          description: "The name of the user."
+        email:
+          type: "string"
+          format: "email"
+          description: "The email address of the user."
+        password:
+          type: "string"
+          description: "The password of the user."
+        number:
+          type: "integer"
+          description: "The phone number of the user."
+    UserLogin:
+      type: "object"
+      required:
+        - "email"
+        - "password"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+          description: "The email address of the user."
+        password:
+          type: "string"
+          description: "The password of the user."
+    UserLoginResponse:
+      x-internal: true
+      type: "object"
+      properties:
+        userId:
+          type: "string"
+          description: "The unique identifier for the user."
+        role:
+          type: "string"
+          enum:
+            - "User"
+            - "Admin"
+          description: "The role of the user (either 'User' or 'Admin')."
+        tokens:
+          type: "object"
+          properties:
+            access:
+              type: "string"
+              description: "Access token for authentication."
+            refresh:
+              type: "string"
+              description: "Refresh token for refreshing access tokens."
+
+`;
+
+module.exports = swaggerYaml;
