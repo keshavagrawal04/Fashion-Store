@@ -1,7 +1,7 @@
+const { User } = require("../models");
 const { userService } = require("../services");
-const { crypto, jwt } = require("../utils");
+const { crypto, jwt, email } = require("../utils");
 const otpGenerator = require("otp-generator");
-const nodemailer = require("nodemailer");
 
 const otpStore = {};
 
@@ -17,7 +17,6 @@ const registerUser = async (req, res) => {
     }
     body.password = await crypto.generateHash(body.password);
     user = await userService.saveUser(body);
-    console.log(user);
     return res.status(201).json({
       status: 200,
       message: "User Registered Successfully",
@@ -86,14 +85,85 @@ const forgotPassword = async (req, res) => {
       alphabets: false,
       upperCaseAlphabets: false,
       lowerCaseAlphabets: false,
+      specialChars: false,
     });
-    otpStore[email] = otp;
+    otpStore[body.email] = {
+      otp: otp,
+      expiryTimestamp: Date.now() + 2 * 60 * 1000,
+    };
     if (!user) {
       return res.status(400).json({
         status: 400,
         message: "User With This Email Is Not Registered",
       });
     }
+    await email.sendPasswordResetOtp(body.email, otp);
+    return res.status(200).json({
+      status: 200,
+      message: "Password Reset Otp Sended To Users Email",
+    });
+  } catch (error) {
+    console.log(`❌ Internal Server Error : ${error.message}`);
+    res.status(400).json({
+      status: 400,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+const verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const user = await userService.findUserByEmail(email);
+    if (!user) {
+      return res.status(400).json({
+        status: 400,
+        message: "User With This Email Is Not Registered",
+      });
+    }
+    const currentTime = Date.now();
+    const isOtpValid = otp === otpStore[email].otp;
+    if (!isOtpValid || currentTime < otpStore[email].otp.expiryTimestamp) {
+      return res.status(400).json({
+        status: 400,
+        message: "Invalid / Expired Otp Try Again",
+      });
+    }
+    return res.status(200).json({
+      status: 200,
+      message: "Otp Is Verified",
+    });
+  } catch (error) {
+    console.log(`❌ Internal Server Error : ${error.message}`);
+    res.status(400).json({
+      status: 400,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+const createPassword = async (req, res) => {
+  try {
+    let { email, password } = req.body;
+    let user = await userService.findUserByEmail(email);
+    if (!user) {
+      return res.status(400).json({
+        status: 400,
+        message: "User With This Email Is Not Registered",
+      });
+    }
+    password = await crypto.generateHash(password);
+    user = await User.findOneAndUpdate(
+      { email: email },
+      { password },
+      { new: true }
+    );
+    return res.status(200).json({
+      status: 200,
+      message: "Password Successfully Updated",
+    });
   } catch (error) {
     console.log(`❌ Internal Server Error : ${error.message}`);
     res.status(400).json({
@@ -113,4 +183,7 @@ module.exports = {
   loginUser,
   deleteUser,
   updateUser,
+  forgotPassword,
+  verifyOtp,
+  createPassword,
 };

@@ -50,6 +50,171 @@ paths:
           description: "Unauthorized. Invalid email or password."
         "500":
           description: "Internal server error"
+  /user/forgot-password:
+    post:
+      summary: Send password reset OTP to user's email
+      description: |
+        This endpoint allows users to request a password reset by providing their email address. 
+        If the email address is associated with a registered user, an OTP (one-time password) is generated 
+        and sent to the user's email address for verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the user requesting password reset.
+                  example: user@example.com
+              required:
+                - email
+      responses:
+        "200":
+          description: Password reset OTP sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Password reset OTP sent to user's email.
+        "400":
+          description: Bad request or internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Internal server error.
+                  error:
+                    type: string
+                    example: Error message detailing the issue.
+      tags:
+        - User
+  /user/verify-otp:
+    post:
+      summary: Verify OTP for password reset
+      description: |
+        This endpoint allows users to verify the OTP (one-time password) sent to their email address for password reset.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the user.
+                  example: user@example.com
+                otp:
+                  type: string
+                  description: The OTP sent to the user's email for verification.
+                  example: 123456
+              required:
+                - email
+                - otp
+      responses:
+        "200":
+          description: OTP verified successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Otp Is Verified
+        "400":
+          description: Bad request or OTP validation failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid Otp Try Again
+                  error:
+                    type: string
+                    example: Error message detailing the issue.
+      tags:
+        - User
+  /user/create-password:
+    post:
+      summary: Create or update user password
+      description: |
+        This endpoint allows users to create or update their password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the user.
+                  example: user@example.com
+                password:
+                  type: string
+                  description: The new password for the user.
+                  example: newPassword123
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: Password successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Password Successfully Updated
+        "400":
+          description: Bad request or internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Internal server error.
+                  error:
+                    type: string
+                    example: Error message detailing the issue.
+      tags:
+        - User
 components:
   schemas:
     User:
