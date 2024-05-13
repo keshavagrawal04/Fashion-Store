@@ -19,7 +19,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-const { userRoutes } = require("./routes");
+const { userRoutes, productRoutes } = require("./routes");
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/product", productRoutes);
 
 module.exports = app;

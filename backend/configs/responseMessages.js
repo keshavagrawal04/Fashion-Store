@@ -7,6 +7,10 @@ const responseMessages = {
   OTP_SENT_SUCCESS: "Password reset OTP sent to your email.",
   OTP_VERIFIED: "OTP verified.",
   PASSWORD_UPDATE_SUCCESS: "Password updated successfully.",
+  PRODUCT_ADD_SUCCESS: "Product added successfully",
+  PRODUCT_UPDATE_SUCCESS: "Product updated successfully",
+  PRODUCT_DELETE_SUCCESS: "Product deleted successfully",
+  PRODUCTS_RETRIEVE_SUCCESS: "Products retrieved successfully",
   INTERNAL_SERVER_ERROR: "Internal server error",
 };
 

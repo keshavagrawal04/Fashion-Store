@@ -18,15 +18,14 @@ const registerUser = async (req, res) => {
     return res.status(201).json({
       status: 200,
       message: responseMessages.USER_REGISTRATION_SUCCESS,
-      data: user,
     });
   } catch (error) {
     console.log(
-      `❌ ${responseMessages.USER_REGISTRATION_SUCCESS} : ${error.message}`
+      `❌ ${responseMessages.INTERNAL_SERVER_ERROR} : ${error.message}`
     );
     res.status(400).json({
       status: 400,
-      message: responseMessages.USER_REGISTRATION_SUCCESS,
+      message: responseMessages.INTERNAL_SERVER_ERROR,
       error: error.message,
     });
   }
