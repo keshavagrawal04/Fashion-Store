@@ -19,4 +19,22 @@ const findAllProducts = async () => {
   }
 };
 
-module.exports = { saveProduct, findAllProducts };
+const findById = async (id) => {
+  try {
+    const product = await Product.findById({ _id: id });
+    return product;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteProduct = async (id) => {
+  try {
+    const product = await Product.findByIdAndDelete({ _id: id });
+    return product;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { saveProduct, findAllProducts, findById, deleteProduct };

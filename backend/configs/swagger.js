@@ -1,5 +1,4 @@
-const swaggerYaml = `#yml
-openapi: "3.0.0"
+const swaggerYaml = `openapi: "3.0.0"
 info:
   title: "Fashion Store E-Commerce"
   version: "1.0.0"
@@ -216,6 +215,146 @@ paths:
                     example: Error message detailing the issue.
       tags:
         - User
+  /product/add:
+    post:
+      summary: Add a new product
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "201":
+          description: Product added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Bad request or internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Internal server error
+                  error:
+                    type: string
+                    example: Error message details
+
+  /product/get:
+    get:
+      summary: "Get all products"
+      description: "Retrieves all products from the system"
+      tags:
+        - Product
+      responses:
+        "200":
+          description: "Products retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "400":
+          description: "Bad request or internal server error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Internal server error
+                  error:
+                    type: string
+                    example: Error message details
+  /product/{id}:
+    get:
+      summary: "Get product by ID"
+      description: "Retrieves a product from the system by its ID"
+      tags:
+        - Product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the product to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Product retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: "Product not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: Product not found
+  /product/delete/{id}:
+    delete:
+      summary: "Delete a product"
+      description: "Deletes a product from the system by its ID"
+      tags:
+        - Product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the product to delete
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Product deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Product deleted successfully
+        "404":
+          description: "Product not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: Product not found
+
 components:
   schemas:
     User:
@@ -322,7 +461,77 @@ components:
             refresh:
               type: "string"
               description: "Refresh token for refreshing access tokens."
-
+    Product:
+      type: object
+      required:
+        - name
+        - brand
+        - category
+        - clothingCategories
+        - color
+        - material
+        - description
+        - images
+        - price
+        - totalStockQuantity
+        - availableStock
+        - stockStatus
+      properties:
+        name:
+          type: string
+        brand:
+          type: string
+        category:
+          type: string
+        size:
+          type: array
+          items:
+            type: string
+        age:
+          type: array
+          items:
+            type: string
+        clothingCategories:
+          type: string
+        color:
+          type: array
+          items:
+            type: string
+        material:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        isFeatured:
+          type: boolean
+        price:
+          type: number
+        discount:
+          type: number
+        discountPrice:
+          type: number
+        discountStart:
+          type: string
+          format: date-time
+        discountEnd:
+          type: string
+          format: date-time
+        tax:
+          type: number
+        totalStockQuantity:
+          type: integer
+        availableStock:
+          type: integer
+        stockStatus:
+          type: string
+          enum:
+            - In Stock
+            - Out of Stock
 `;
 
 module.exports = swaggerYaml;

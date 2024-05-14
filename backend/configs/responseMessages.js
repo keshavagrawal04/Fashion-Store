@@ -10,7 +10,9 @@ const responseMessages = {
   PRODUCT_ADD_SUCCESS: "Product added successfully",
   PRODUCT_UPDATE_SUCCESS: "Product updated successfully",
   PRODUCT_DELETE_SUCCESS: "Product deleted successfully",
+  PRODUCT_NOT_FOUND: "Product not found",
   PRODUCTS_RETRIEVE_SUCCESS: "Products retrieved successfully",
+  PRODUCT_RETRIEVE_SUCCESS: "Product retrieved successfully",
   INTERNAL_SERVER_ERROR: "Internal server error",
 };
 
