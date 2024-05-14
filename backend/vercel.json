@@ -11,6 +11,11 @@
       "src": "/(.*)",
       "dest": "/"
     },
-    { "src": "/api-docs/swagger-ui.{css,js}", "cacheControl": "no-cache" }
+    {
+      "src": "/api-docs/swagger-ui.{css,js}",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
   ]
 }
