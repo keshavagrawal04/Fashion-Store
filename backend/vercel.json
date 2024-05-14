@@ -14,7 +14,10 @@
     {
       "src": "/api-docs/swagger-ui.{css,js}",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache" }
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
       ]
     }
   ]
